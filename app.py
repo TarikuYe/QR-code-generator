@@ -260,9 +260,9 @@ def generate_svg(
         fill_color=fill_color,
         back_color=back_color,
     )
-    buf = io.StringIO()
+    buf = io.BytesIO()
     img.save(buf)
-    return buf.getvalue()
+    return buf.getvalue().decode("utf-8")
 
 
 def generate_pdf_bytes(
