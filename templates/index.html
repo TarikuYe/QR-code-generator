@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QR Code Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📱</text></svg>" />
+</head>
+<body>
+    <div class="bg-effects">
+        <div class="bg-orb bg-orb-1"></div>
+        <div class="bg-orb bg-orb-2"></div>
+        <div class="bg-orb bg-orb-3"></div>
+    </div>
+    <div class="container">
+        <div class="glass-card">
+            <header class="app-header">
+                <div class="header-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="7" height="7" />
+                        <rect x="14" y="3" width="7" height="7" />
+                        <rect x="14" y="14" width="7" height="7" />
+                        <rect x="3" y="14" width="4" height="4" />
+                        <line x1="3" y1="21" x2="3" y2="18" />
+                        <line x1="21" y1="3" x2="21" y2="6" />
+                        <line x1="3" y1="3" x2="3" y2="6" />
+                        <line x1="21" y1="14" x2="21" y2="17" />
+                    </svg>
+                </div>
+                <h1>QR Code Generator</h1>
+                <p class="subtitle">Generate, customize, scan, and share QR codes instantly</p>
+            </header>
+
+            <nav class="tab-nav">
+                <button class="tab-btn active" data-tab="generate">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="4" height="4"/></svg>
+                    Generate
+                </button>
+                <button class="tab-btn" data-tab="scanner">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><line x1="7" y1="12" x2="17" y2="12"/></svg>
+                    Scan
+                </button>
+                <button class="tab-btn" data-tab="bulk">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Bulk
+                </button>
+                <button class="tab-btn" data-tab="history">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    History
+                    <span class="history-badge" id="history-badge" style="display:none">0</span>
+                </button>
+            </nav>
+
+            <div class="tab-content">
+                <!-- GENERATE TAB -->
+                <div class="tab-pane active" id="tab-generate">
+                    <div class="input-group">
+                        <label for="qr-input" class="input-label">Enter Text or URL</label>
+                        <div class="input-row">
+                            <input type="text" id="qr-input" class="glass-input" placeholder="https://example.com" autofocus />
+                            <button id="generate-btn" class="btn btn-primary" type="button">
+                                <span class="btn-text">Generate</span>
+                                <span class="btn-loader"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" stroke-dasharray="31.4 31.4" stroke-linecap="round"/></svg></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="options-grid">
+                        <div class="opt-group">
+                            <span class="opt-label">Colors</span>
+                            <div class="color-row">
+                                <div class="color-pick">
+                                    <label>Fill</label>
+                                    <div class="color-wrap">
+                                        <input type="color" id="fill-color" value="#6c5ce7" />
+                                        <span class="color-swatch" id="fill-swatch"></span>
+                                        <span class="color-hex" id="fill-hex">#6c5ce7</span>
+                                    </div>
+                                </div>
+                                <button id="swap-colors-btn" class="btn-icon-sm" title="Swap colors">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4"/></svg>
+                                </button>
+                                <div class="color-pick">
+                                    <label>Bg</label>
+                                    <div class="color-wrap">
+                                        <input type="color" id="back-color" value="#ffffff" />
+                                        <span class="color-swatch" id="back-swatch"></span>
+                                        <span class="color-hex" id="back-hex">#ffffff</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="opt-group">
+                            <span class="opt-label">Error Correction</span>
+                            <div class="select-wrap">
+                                <select id="error-correction">
+                                    <option value="L">Low (7%)</option>
+                                    <option value="M">Medium (15%)</option>
+                                    <option value="Q">Quartile (25%)</option>
+                                    <option value="H" selected>High (30%)</option>
+                                </select>
+                                <svg class="select-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                            </div>
+                        </div>
+
+                        <div class="opt-group">
+                            <span class="opt-label">QR Size</span>
+                            <div class="btn-group" id="qr-size">
+                                <button class="opt-btn" data-value="small">Small</button>
+                                <button class="opt-btn active" data-value="medium">Medium</button>
+                                <button class="opt-btn" data-value="large">Large</button>
+                                <button class="opt-btn" data-value="xlarge">X-Large</button>
+                            </div>
+                        </div>
+
+                        <div class="opt-group">
+                            <span class="opt-label">Module Style</span>
+                            <div class="btn-group" id="module-style">
+                                <button class="opt-btn active" data-value="square">Square</button>
+                                <button class="opt-btn" data-value="rounded">Rounded</button>
+                                <button class="opt-btn" data-value="dots">Dots</button>
+                                <button class="opt-btn" data-value="diamond">Diamond</button>
+                            </div>
+                        </div>
+
+                        <div class="opt-group">
+                            <span class="opt-label">Eye Style</span>
+                            <div class="btn-group" id="eye-style">
+                                <button class="opt-btn active" data-value="standard">Standard</button>
+                                <button class="opt-btn" data-value="rounded">Rounded</button>
+                                <button class="opt-btn" data-value="circle">Circle</button>
+                            </div>
+                        </div>
+
+                        <div class="opt-group">
+                            <span class="opt-label">Gradient</span>
+                            <div class="btn-group" id="gradient-style">
+                                <button class="opt-btn active" data-value="none">None</button>
+                                <button class="opt-btn" data-value="linear">Linear</button>
+                                <button class="opt-btn" data-value="radial">Radial</button>
+                            </div>
+                            <div id="gradient-options" class="gradient-opts" style="display:none;margin-top:8px">
+                                <div class="color-pick" style="flex:1">
+                                    <label>To Color</label>
+                                    <div class="color-wrap">
+                                        <input type="color" id="gradient-color" value="#000000" />
+                                        <span class="color-swatch" id="gradient-swatch"></span>
+                                        <span class="color-hex" id="gradient-hex">#000000</span>
+                                    </div>
+                                </div>
+                                <div class="select-wrap" style="flex:1">
+                                    <label style="font-size:11px;color:var(--text-sec);display:block;margin-bottom:4px">Direction</label>
+                                    <select id="gradient-direction">
+                                        <option value="horizontal">Horizontal</option>
+                                        <option value="vertical">Vertical</option>
+                                        <option value="diagonal">Diagonal</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="opt-group">
+                            <span class="opt-label">Logo <span class="badge-opt">optional</span></span>
+                            <div class="logo-area" id="logo-upload-area">
+                                <input type="file" id="logo-input" accept="image/png,image/jpeg,image/gif,image/webp" class="logo-hidden" />
+                                <div class="logo-dropzone" id="logo-dropzone">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                    <span><span class="drop-link">Click</span> or drag logo here</span>
+                                </div>
+                                <div class="logo-preview" id="logo-preview" style="display:none">
+                                    <img id="logo-preview-img" alt="" />
+                                    <span id="logo-preview-name"></span>
+                                    <button id="logo-remove-btn" class="btn btn-tiny btn-ghost" title="Remove">✕</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="message-area" class="msg-area" role="alert"></div>
+
+                    <div class="result-area" id="result-area">
+                        <div class="result-placeholder" id="result-placeholder">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" opacity="0.5"/><rect x="14" y="3" width="7" height="7" opacity="0.5"/><rect x="14" y="14" width="7" height="7" opacity="0.5"/><rect x="3" y="14" width="4" height="4" opacity="0.3"/></svg>
+                            <p>Your QR code will appear here</p>
+                        </div>
+                        <div class="result-content" id="result-content" style="display:none">
+                            <div class="qr-display">
+                                <img id="qr-image" src="" alt="Generated QR Code" />
+                            </div>
+                            <div class="result-tools">
+                                <div class="btn-row">
+                                    <button id="download-png-btn" class="btn btn-sec" disabled>
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                        PNG
+                                    </button>
+                                    <button id="download-svg-btn" class="btn btn-sec" disabled>
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                        SVG
+                                    </button>
+                                    <button id="download-pdf-btn" class="btn btn-sec" disabled>
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                                        PDF
+                                    </button>
+                                    <button id="share-btn" class="btn btn-sec" disabled>
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                                        Share
+                                    </button>
+                                </div>
+                                <button id="new-btn" class="btn btn-outline" type="button">Generate New</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SCANNER TAB -->
+                <div class="tab-pane" id="tab-scanner">
+                    <p class="tab-desc">Scan a QR code using your camera or upload an image.</p>
+                    <div class="scanner-mode">
+                        <button id="scan-camera-btn" class="btn btn-primary">📷 Open Camera</button>
+                        <label class="btn btn-sec" for="scan-upload">📁 Upload Image</label>
+                        <input type="file" id="scan-upload" accept="image/*" style="display:none" />
+                    </div>
+                    <div id="scanner-container" class="scanner-box" style="display:none">
+                        <video id="scanner-video" autoplay playsinline></video>
+                        <canvas id="scanner-canvas" style="display:none"></canvas>
+                        <button id="scan-stop-btn" class="btn btn-tiny btn-ghost" style="position:absolute;top:8px;right:8px">✕ Stop</button>
+                    </div>
+                    <div class="scan-result" id="scan-result" style="display:none">
+                        <span class="scan-label">Decoded:</span>
+                        <span id="scan-text"></span>
+                    </div>
+                </div>
+
+                <!-- BULK TAB -->
+                <div class="tab-pane" id="tab-bulk">
+                    <p class="tab-desc">Generate multiple QR codes at once. Enter one item per line (max 50).</p>
+                    <textarea id="bulk-input" class="glass-input bulk-textarea" placeholder="https://example.com&#10;https://google.com&#10;Hello World" rows="6"></textarea>
+                    <button id="bulk-generate-btn" class="btn btn-primary" type="button">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                        Generate &amp; Download ZIP
+                    </button>
+                </div>
+
+                <!-- HISTORY TAB -->
+                <div class="tab-pane" id="tab-history">
+                    <div class="history-header">
+                        <p class="tab-desc">Your previously generated QR codes.</p>
+                        <button id="clear-history-btn" class="btn btn-tiny btn-ghost" style="display:none">Clear All</button>
+                    </div>
+                    <div id="history-list" class="history-list">
+                        <p class="empty-state">No history yet. Generate a QR code to get started.</p>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="app-footer">
+                <p>Powered by <strong>Flask</strong> &amp; <strong>Pillow</strong></p>
+            </footer>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
