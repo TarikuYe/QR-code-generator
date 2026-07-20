@@ -244,7 +244,7 @@ function displayQRCode(url) {
     _currentImageUrl = url;
     dom.placeholder.style.display = 'none';
     dom.resultContent.style.display = 'block';
-    dom.qrImage.src = `${url}?t=${Date.now()}`;
+    dom.qrImage.src = url.startsWith('data:') ? url : `${url}?t=${Date.now()}`;
     dom.qrImage.alt = 'Generated QR Code';
     dom.downloadPng.disabled = false;
     dom.downloadSvg.disabled = false;

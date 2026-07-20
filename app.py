@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import base64
 import io
 import os
 import re
@@ -400,11 +401,21 @@ def generate():
             except Exception:
                 return jsonify({"error": "Could not process the logo image."}), 400
 
-        filename = generate_qr_filename()
-        filepath = os.path.join(GENERATED_DIR, filename)
-        qr_image.save(filepath, "PNG")
-        image_url = os.path.join("static", "generated", filename).replace("\\", "/")
-        return jsonify({"image_url": image_url})
+        img_buf = BytesIO()
+        qr_image.save(img_buf, "PNG")
+        img_b64 = base64.b64encode(img_buf.getvalue()).decode()
+        data_url = f"data:image/png;base64,{img_b64}"
+
+        image_url = None
+        try:
+            filename = generate_qr_filename()
+            filepath = os.path.join(GENERATED_DIR, filename)
+            qr_image.save(filepath, "PNG")
+            image_url = os.path.join("static", "generated", filename).replace("\\", "/")
+        except (OSError, PermissionError):
+            pass
+
+        return jsonify({"image_url": image_url or data_url})
 
     except Exception as exc:
         return jsonify({"error": f"An unexpected error occurred: {str(exc)}"}), 500
