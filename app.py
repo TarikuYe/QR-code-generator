@@ -18,17 +18,21 @@ app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024
 
 GENERATED_DIR = os.path.join("static", "generated")
-os.makedirs(GENERATED_DIR, exist_ok=True)
 
-_now = time.time()
-for _fname in os.listdir(GENERATED_DIR):
-    _fpath = os.path.join(GENERATED_DIR, _fname)
-    if os.path.isfile(_fpath) and _fname.endswith(".png"):
-        if _now - os.path.getmtime(_fpath) > 3600:
-            try:
-                os.remove(_fpath)
-            except OSError:
-                pass
+def _init_generated_dir():
+    try:
+        os.makedirs(GENERATED_DIR, exist_ok=True)
+        _now = time.time()
+        for _fname in os.listdir(GENERATED_DIR):
+            _fpath = os.path.join(GENERATED_DIR, _fname)
+            if os.path.isfile(_fpath) and _fname.endswith(".png"):
+                if _now - os.path.getmtime(_fpath) > 3600:
+                    try:
+                        os.remove(_fpath)
+                    except OSError:
+                        pass
+    except OSError:
+        pass
 
 ALLOWED_LOGO_EXTENSIONS = {".png", ".jpg", ".jpeg", ".gif", ".webp"}
 
@@ -407,6 +411,7 @@ def generate():
         data_url = f"data:image/png;base64,{img_b64}"
 
         image_url = None
+        _init_generated_dir()
         try:
             filename = generate_qr_filename()
             filepath = os.path.join(GENERATED_DIR, filename)
