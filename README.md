@@ -1,6 +1,8 @@
 # QR Code Generator
 
-A modern, responsive web application for generating QR codes from any text or URL. Built with **Python (Flask)** on the backend and **HTML, CSS, and JavaScript** on the frontend.
+🔗 **Live Demo:** [https://qr-code-generator-jgko.vercel.app](https://qr-code-generator-jgko.vercel.app)
+
+A modern, responsive web application for generating QR codes from any text or URL. Built with **Python (Flask)** on the backend and **React + Vite** on the frontend.
 
 ## Features
 
