@@ -298,8 +298,14 @@ def generate_pdf_bytes(
     return pdf.output()
 
 
-FRONTEND_DIST = os.path.join(os.path.dirname(__file__), "frontend", "dist")
-# isfile — index.html is a file, not a directory
+# Resolve frontend/dist relative to this file, then also try relative to cwd
+# (Vercel serverless functions may have a different working directory)
+_HERE = os.path.dirname(os.path.abspath(__file__))
+FRONTEND_DIST = os.path.join(_HERE, "frontend", "dist")
+if not os.path.isfile(os.path.join(FRONTEND_DIST, "index.html")):
+    # fallback: relative to cwd (local dev)
+    FRONTEND_DIST = os.path.join(os.getcwd(), "frontend", "dist")
+
 _use_react = os.path.isfile(os.path.join(FRONTEND_DIST, "index.html"))
 
 
