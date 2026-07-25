@@ -299,7 +299,9 @@ def generate_pdf_bytes(
 
 
 FRONTEND_DIST = os.path.join(os.path.dirname(__file__), "frontend", "dist")
-_use_react = os.path.isdir(os.path.join(FRONTEND_DIST, "index.html"))
+# isfile — index.html is a file, not a directory
+_use_react = os.path.isfile(os.path.join(FRONTEND_DIST, "index.html"))
+
 
 @app.route("/")
 def index():
@@ -307,10 +309,11 @@ def index():
         return send_from_directory(FRONTEND_DIST, "index.html")
     return render_template("index.html")
 
-if _use_react:
-    @app.route("/assets/<path:filename>")
-    def react_assets(filename):
-        return send_from_directory(os.path.join(FRONTEND_DIST, "assets"), filename)
+
+@app.route("/assets/<path:filename>")
+def react_assets(filename):
+    """Serve Vite-built JS/CSS chunks from frontend/dist/assets/."""
+    return send_from_directory(os.path.join(FRONTEND_DIST, "assets"), filename)
 
 
 SIZE_MAP = {
@@ -525,6 +528,21 @@ def generate_bulk():
         )
     except Exception as exc:
         return jsonify({"error": str(exc)}), 500
+
+
+@app.route("/<path:filename>")
+def react_static(filename):
+    """
+    Catch-all: serve any file that exists in frontend/dist (favicon, manifest, etc.).
+    Falls back to index.html so the React SPA handles its own routing.
+    Only used when running Flask locally; on Vercel, vercel.json handles this.
+    """
+    target = os.path.join(FRONTEND_DIST, filename)
+    if os.path.isfile(target):
+        return send_from_directory(FRONTEND_DIST, filename)
+    if _use_react:
+        return send_from_directory(FRONTEND_DIST, "index.html")
+    return render_template("index.html")
 
 
 if __name__ == "__main__":

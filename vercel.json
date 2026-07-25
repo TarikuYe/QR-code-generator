@@ -1,4 +1,7 @@
 {
+  "version": 2,
+  "buildCommand": "cd frontend && npm install && npm run build",
+  "outputDirectory": "frontend/dist",
   "builds": [
     {
       "src": "api/index.py",
@@ -7,12 +10,28 @@
   ],
   "routes": [
     {
+      "src": "/generate",
+      "dest": "api/index.py"
+    },
+    {
+      "src": "/generate/(.*)",
+      "dest": "api/index.py"
+    },
+    {
       "src": "/static/(.*)",
       "dest": "api/index.py"
     },
     {
+      "src": "/assets/(.*)",
+      "dest": "/assets/$1"
+    },
+    {
+      "src": "/(.*\\.(js|css|png|svg|ico|woff2?|ttf|otf|json))",
+      "dest": "/$1"
+    },
+    {
       "src": "/(.*)",
-      "dest": "api/index.py"
+      "dest": "/index.html"
     }
   ]
 }

@@ -624,8 +624,8 @@ function AccordionGroup({ icon, label, open, onToggle, children }) {
     <div className="appearance-group">
       <button className="appearance-toggle" onClick={onToggle}>
         {icon}
-        {label}
-        <ChevronDown size={14} className={`chevron ${open ? 'open' : ''}`} />
+        <span style={{ flex: 1, textAlign: 'left' }}>{label}</span>
+        <ChevronDown size={14} style={{ flexShrink: 0, marginLeft: 'auto', color: 'var(--text-muted)', transition: 'transform .22s', transform: open ? 'rotate(180deg)' : 'none' }} />
       </button>
       <AnimatePresence>
         {open && (
