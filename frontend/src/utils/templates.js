@@ -1,0 +1,25 @@
+import { Utensils, Briefcase, Globe, FileText, Link, Wifi, CreditCard, Calendar, User, Image, MapPin, Video, Users, PartyPopper, ExternalLink, Ticket } from 'lucide-react';
+
+export const TEMPLATES = [
+  { id: 'website',       label: 'Website',        icon: Globe,       type: 'url',     values: { url: 'https://mywebsite.com' } },
+  { id: 'business',      label: 'Business Card',   icon: Briefcase,   type: 'vcard',   values: { name: 'Jane Doe', phone: '+1234567890', email: 'jane@company.com', org: 'Company Inc.', title: 'CEO' } },
+  { id: 'linkedin',      label: 'LinkedIn',        icon: Link,        type: 'url',     values: { url: 'https://linkedin.com/in/yourname' } },
+  { id: 'instagram',     label: 'Instagram',       icon: Image,       type: 'url',     values: { url: 'https://instagram.com/yourname' } },
+  { id: 'facebook',      label: 'Facebook',        icon: Globe,       type: 'url',     values: { url: 'https://facebook.com/yourpage' } },
+  { id: 'wifi',          label: 'WiFi Login',      icon: Wifi,        type: 'wifi',    values: { ssid: 'Guest WiFi', password: 'securepass', encryption: 'WPA/WPA2' } },
+  { id: 'menu',          label: 'Menu',            icon: Utensils,    type: 'url',     values: { url: 'https://menu.example.com' } },
+  { id: 'portfolio',     label: 'Portfolio',       icon: FileText,    type: 'url',     values: { url: 'https://myportfolio.dev' } },
+  { id: 'event',         label: 'Event Ticket',    icon: Calendar,    type: 'event',   values: { title: 'My Event', start: '2025-06-15T09:00', end: '2025-06-15T17:00', location: 'Venue Name' } },
+  { id: 'payment',       label: 'Payment Link',    icon: CreditCard,  type: 'url',     values: { url: 'https://pay.me/link' } },
+  { id: 'resume',        label: 'Resume',          icon: User,        type: 'url',     values: { url: 'https://myresume.com' } },
+  { id: 'conf',          label: 'Conference',      icon: Users,       type: 'event',   values: { title: 'Annual Conference', start: '2025-09-20T09:00', end: '2025-09-21T18:00', location: 'Convention Center', description: 'Two-day conference with keynote speakers, workshops, and networking.' } },
+  { id: 'workshop',      label: 'Workshop',        icon: Video,       type: 'event',   values: { title: 'Hands-on Workshop', start: '2025-07-10T14:00', end: '2025-07-10T17:00', location: 'Room 301', description: 'Interactive workshop — bring your laptop!' } },
+  { id: 'meeting',       label: 'Meeting',         icon: Users,       type: 'event',   values: { title: 'Team Sync', start: '2025-06-01T10:00', end: '2025-06-01T11:00', location: 'Conference Room A', description: 'Weekly team standup.' } },
+  { id: 'party',         label: 'Party',           icon: PartyPopper, type: 'event',   values: { title: 'Summer Party', start: '2025-08-15T19:00', end: '2025-08-15T23:00', location: 'Rooftop Terrace', description: 'Food, drinks, and music!' } },
+  { id: 'webinar',       label: 'Webinar',         icon: Video,       type: 'event',   values: { title: 'Product Webinar', start: '2025-06-20T15:00', end: '2025-06-20T16:00', location: 'Online (Zoom link in description)', description: 'Join us for a live demo and Q&A session.' } },
+  { id: 'event-reg',     label: 'Event Registration', icon: ExternalLink, type: 'url', values: { url: 'https://eventbrite.com/e/your-event' } },
+  { id: 'rsvp',          label: 'RSVP Link',       icon: Ticket,      type: 'url',     values: { url: 'https://rsvp.example.com/event-id' } },
+  { id: 'ticket',        label: 'Buy Tickets',     icon: CreditCard,  type: 'url',     values: { url: 'https://tickets.example.com/event' } },
+  { id: 'livestream',    label: 'Live Stream',     icon: Video,       type: 'url',     values: { url: 'https://youtube.com/watch?v=your-livestream' } },
+  { id: 'venue',         label: 'Venue Info',      icon: MapPin,      type: 'url',     values: { url: 'https://maps.google.com/?q=Venue+Name' } },
+];

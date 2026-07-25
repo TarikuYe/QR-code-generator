@@ -11,7 +11,7 @@ from io import BytesIO
 
 import qrcode
 import qrcode.image.svg
-from flask import Flask, jsonify, render_template, request, send_file
+from flask import Flask, jsonify, render_template, request, send_file, send_from_directory
 from PIL import Image, ImageDraw
 
 app = Flask(__name__)
@@ -298,9 +298,19 @@ def generate_pdf_bytes(
     return pdf.output()
 
 
+FRONTEND_DIST = os.path.join(os.path.dirname(__file__), "frontend", "dist")
+_use_react = os.path.isdir(os.path.join(FRONTEND_DIST, "index.html"))
+
 @app.route("/")
 def index():
+    if _use_react:
+        return send_from_directory(FRONTEND_DIST, "index.html")
     return render_template("index.html")
+
+if _use_react:
+    @app.route("/assets/<path:filename>")
+    def react_assets(filename):
+        return send_from_directory(os.path.join(FRONTEND_DIST, "assets"), filename)
 
 
 SIZE_MAP = {
