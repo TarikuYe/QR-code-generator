@@ -1,154 +1,157 @@
-# QR Code Generator
+# QR Studio — Professional QR Code Generator
 
 🔗 **Live Demo:** [https://qr-code-generator-jgko.vercel.app](https://qr-code-generator-jgko.vercel.app)
 
-A modern, responsive web application for generating QR codes from any text or URL. Built with **Python (Flask)** on the backend and **React + Vite** on the frontend.
+A modern, full-stack QR code generator built with **Python (Flask)** and **React + Vite**. Create beautiful, fully customizable QR codes for URLs, WiFi, contacts, events, payments, and more — instantly, for free.
+
+---
 
 ## Features
 
-- **Instant QR Code Generation** — Enter any text or URL and generate a QR code with one click.
-- **No Page Reload** — Uses the Fetch API to communicate with the backend asynchronously.
-- **Download as PNG** — Save generated QR codes as high-quality PNG images.
-- **Responsive Design** — Works beautifully on desktop, tablet, and mobile devices.
-- **Validation & Feedback** — Client-side and server-side validation with clear success/error messages.
-- **Loading Indicator** — Visual feedback while the QR code is being generated.
-- **Keyboard Support** — Press Enter to generate, auto-focus on the input field.
+- **10 QR Types** — URL, Text, Email, Phone, SMS, WhatsApp, WiFi, Contact (vCard), Location, Calendar Event
+- **21 Quick Templates** — Business card, LinkedIn, Instagram, WiFi login, event ticket, and more
+- **Full Customization** — Foreground/background colors, color presets, gradients (linear/radial), module styles (square, rounded, dots, diamond), eye styles (standard, rounded, circle)
+- **Logo Embedding** — Upload a PNG, JPG, or WebP logo to embed in the center of your QR code
+- **Multiple Export Formats** — Download as PNG, SVG, or PDF
+- **Generation History** — Last 50 QR codes saved to localStorage with thumbnails
+- **Dark Mode** — System-aware, persisted to localStorage
+- **Copy & Share** — Copy image to clipboard or share via Web Share API
+- **Instant Preview** — QR code auto-generates as you type (debounced)
+- **Privacy First** — No data stored server-side; all processing is ephemeral
+
+---
 
 ## Tech Stack
 
-| Technology | Purpose |
+| Layer | Technology |
 |---|---|
-| **Python 3** | Backend programming language |
-| **Flask** | Web framework |
-| **qrcode** | QR code generation library |
-| **Pillow** | Image processing (required by qrcode) |
-| **HTML5 / CSS3** | Frontend structure and styling |
-| **JavaScript (Fetch API)** | Frontend interactivity |
+| **Backend** | Python 3, Flask |
+| **QR Generation** | qrcode, Pillow |
+| **PDF Export** | fpdf2 |
+| **Frontend** | React 19, Vite 8 |
+| **Animations** | Framer Motion |
+| **Icons** | Lucide React |
+| **Deployment** | Vercel (Python serverless + static) |
+
+---
 
 ## Project Structure
 
 ```
 qr_code_generator/
-├── app.py                     # Flask application (backend logic)
-├── requirements.txt           # Python dependencies
-├── .gitignore                 # Git ignore rules
-├── README.md                  # This file
+├── app.py                        # Flask app — QR generation, serving React dist
+├── api/
+│   └── index.py                  # Vercel serverless entry point
+├── requirements.txt              # Python dependencies
+├── vercel.json                   # Vercel deployment config
+├── frontend/
+│   ├── src/
+│   │   ├── App.jsx               # Main React app (all UI components)
+│   │   ├── styles/index.css      # Design system & component styles
+│   │   ├── utils/
+│   │   │   ├── api.js            # Fetch wrappers for backend endpoints
+│   │   │   ├── qrTypes.js        # QR type definitions & data builders
+│   │   │   └── templates.js      # Quick-start template presets
+│   │   └── hooks/
+│   │       └── useHistory.js     # localStorage history hook
+│   ├── dist/                     # Production build (committed for Vercel)
+│   ├── index.html                # HTML entry point
+│   ├── vite.config.js            # Vite config with dev proxy
+│   └── package.json
 ├── static/
-│   ├── css/
-│   │   └── style.css          # Application stylesheet
-│   ├── js/
-│   │   └── script.js          # Frontend JavaScript
-│   └── generated/             # Generated QR code images (auto-created)
+│   └── generated/                # Temporarily saved QR PNGs (auto-cleaned)
 └── templates/
-    └── index.html             # Main HTML page
+    └── index.html                # Legacy fallback HTML (no React build)
 ```
 
-## Installation
+---
+
+## Local Development
 
 ### Prerequisites
 
-- **Python 3.8 or higher** installed on your system.
-- **pip** (Python package manager).
+- Python 3.8+
+- Node.js 18+
 
-### Step 1: Clone or download the project
+### 1. Clone the repo
 
 ```bash
-cd qr_code_generator
+git clone https://github.com/TarikuYe/QR-code-generator.git
+cd QR-code-generator
 ```
 
-### Step 2: Create a virtual environment (recommended)
+### 2. Set up the Python backend
 
-**Windows:**
 ```bash
 python -m venv venv
+# Windows
 venv\Scripts\activate
-```
-
-**macOS / Linux:**
-```bash
-python3 -m venv venv
+# macOS / Linux
 source venv/bin/activate
-```
 
-### Step 3: Install dependencies
-
-```bash
 pip install -r requirements.txt
+python app.py
+# Running at http://127.0.0.1:5000
 ```
 
-### Step 4: Run the application
+### 3. Set up the React frontend
 
 ```bash
-python app.py
+cd frontend
+npm install
+npm run dev
+# Running at http://localhost:5173
+# API calls are proxied to http://127.0.0.1:5000
 ```
 
-### Step 5: Open in your browser
+Open **http://localhost:5173** in your browser.
 
-Navigate to **http://127.0.0.1:5000** in your web browser.
+---
 
-## Usage
+## API Endpoints
 
-1. Enter text, a URL, or any string in the input field.
-2. Click the **Generate** button (or press **Enter**).
-3. The generated QR code appears instantly on the page.
-4. Click **Download QR Code** to save the image as a PNG file.
-5. Click **Generate New** to clear the result and start over.
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/generate` | Generate QR as PNG (base64 data URL) |
+| `POST` | `/generate/svg` | Generate QR as SVG |
+| `POST` | `/generate/pdf` | Generate QR as PDF |
+| `POST` | `/generate/bulk` | Generate up to 50 QR codes as a ZIP |
 
-### Examples of what you can encode
+### `/generate` request (multipart/form-data)
 
-| Type | Example Input |
-|---|---|
-| Website URL | `https://example.com` |
-| Plain text | `Hello, World!` |
-| Email address | `mailto:user@example.com` |
-| Phone number | `tel:+1234567890` |
-| Wi-Fi credentials | `WIFI:T:WPA;S:MyNetwork;P:MyPassword;;` |
-| Custom string | Any text you like |
+| Field | Type | Default | Description |
+|---|---|---|---|
+| `data` | string | — | Content to encode (required) |
+| `fill_color` | string | `#6366f1` | Foreground hex color |
+| `back_color` | string | `#ffffff` | Background hex color |
+| `error_correction` | L/M/Q/H | `H` | Error correction level |
+| `module_style` | string | `square` | `square`, `rounded`, `dots`, `diamond` |
+| `eye_style` | string | `standard` | `standard`, `rounded`, `circle` |
+| `gradient` | string | `none` | `none`, `linear`, `radial` |
+| `gradient_color` | string | `#000000` | Gradient end color |
+| `gradient_direction` | string | `horizontal` | `horizontal`, `vertical`, `diagonal` |
+| `qr_size` | string | `medium` | `small`, `medium`, `large`, `xlarge` |
+| `logo` | file | — | Optional logo image (PNG/JPG/WebP, max 4 MB) |
 
-## Extending the Application
-
-The codebase is designed to be easy to extend. Here are some ideas:
-
-- **QR Code Color Customization** — Add color pickers for fill and background colors.
-- **Logo Embedding** — Overlay a logo image in the center of the QR code.
-- **Size Selection** — Let users choose the QR code size (e.g., small, medium, large).
-- **Batch Generation** — Upload a CSV file to generate multiple QR codes at once.
-- **Error Correction Level** — Allow users to choose L, M, Q, or H levels.
-- **History** — Keep a history of previously generated QR codes.
-
-## Development
-
-### Code Quality
-
-- Python code follows **PEP 8** standards.
-- JavaScript uses modern ES6+ syntax with `'use strict'` mode.
-- CSS uses custom properties (design tokens) for consistent theming.
-- Meaningful variable and function names throughout.
-- Comprehensive error handling on both frontend and backend.
-
-### Running in Development Mode
-
-The application runs in debug mode by default, which provides:
-- Automatic reloading when code changes.
-- Detailed error pages for debugging.
-
-To disable debug mode, change `app.run(debug=True)` to `app.run(debug=False)` in `app.py`.
+---
 
 ## Deployment
 
-For production deployment, use a WSGI server like **Gunicorn**:
+The project is deployed on **Vercel** using a Python serverless function for the API and serving the pre-built React `dist/` as static files.
+
+All traffic routes through `api/index.py` (Flask):
+- `/generate*` and `/static/*` → handled by Flask
+- Everything else → serves `frontend/dist/index.html` (React SPA)
+
+To deploy your own instance:
 
 ```bash
-gunicorn -w 4 -b 0.0.0.0:8000 app:app
+npm i -g vercel
+vercel --prod
 ```
 
-Or use **Waitress** on Windows:
-
-```bash
-pip install waitress
-waitress-serve --port=8000 app:app
-```
+---
 
 ## License
 
-This project is open source and available under the MIT License.
+MIT — free for personal and commercial use.
